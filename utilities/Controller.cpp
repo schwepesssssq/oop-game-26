@@ -7,12 +7,13 @@
 #include "Move.h"
 #include "Visual.h"
 
-Controller::Controller(Game& game) : game_(game) {}
+Controller::Controller(Game& game)
+    : game_(game) {}
 
 void Controller::Run() {
   while (game_.GetState() == GameState::kInProgress) {
     Visual::Render(game_);
-
+    
     if (!ProcessInput()) {
       std::cout << "Game exited by user.\n";
       return;
@@ -37,22 +38,12 @@ bool Controller::ProcessInput() {
 
   Direction direction;
   switch (std::tolower(input[0])) {
-    case 'w':
-      direction = Direction::kUp;
-      break;
-    case 's':
-      direction = Direction::kDown;
-      break;
-    case 'a':
-      direction = Direction::kLeft;
-      break;
-    case 'd':
-      direction = Direction::kRight;
-      break;
-    case 'q':
-      return false;
-    default:
-      return true;
+    case 'w': direction = Direction::kUp; break;
+    case 's': direction = Direction::kDown; break;
+    case 'a': direction = Direction::kLeft; break;
+    case 'd': direction = Direction::kRight; break;
+    case 'q': return false;
+    default:  return true;
   }
 
   game_.PlayerMove(direction);

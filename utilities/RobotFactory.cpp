@@ -1,9 +1,8 @@
-#include "headers/RobotFactory.h"
+#include "RobotFactory.h"
 
 #include <vector>
 
 #include "Game.h"
-#include "Map.h"
 
 RobotFactory::RobotFactory(int x, int y, int spawn_interval)
     : top_left_x_(x),
@@ -14,7 +13,9 @@ RobotFactory::RobotFactory(int x, int y, int spawn_interval)
 bool RobotFactory::UpdateAndTrySpawn(Game& game) {
   ++move_count_;
 
-  if (move_count_ < spawn_interval_) return false;
+  if (move_count_ < spawn_interval_) {
+    return false;
+  }
 
   move_count_ = 0;
 
@@ -23,8 +24,8 @@ bool RobotFactory::UpdateAndTrySpawn(Game& game) {
 
   for (int x = top_left_x_ - 1; x <= top_left_x_ + 2; ++x) {
     for (int y = top_left_y_ - 1; y <= top_left_y_ + 2; ++y) {
-      if (x >= top_left_x_ && x <= top_left_x_ + 1 && y >= top_left_y_ &&
-          y <= top_left_y_ + 1) {
+      if (x >= top_left_x_ && x <= top_left_x_ + 1 &&
+          y >= top_left_y_ && y <= top_left_y_ + 1) {
         continue;
       }
 
@@ -42,6 +43,6 @@ bool RobotFactory::UpdateAndTrySpawn(Game& game) {
   return game.AddEnemyRobot(spawn_x, spawn_y);
 }
 
-int RobotFactory::GetPosX() const { return top_left_x_; }
-int RobotFactory::GetPosY() const { return top_left_y_; }
+int RobotFactory::GetPositionX() const { return top_left_x_; }
+int RobotFactory::GetPositionY() const { return top_left_y_; }
 int RobotFactory::GetMoveCount() const { return move_count_; }

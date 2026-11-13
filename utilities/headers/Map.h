@@ -2,7 +2,6 @@
 #define MAP_H
 
 #include <vector>
-
 #include "Cell.h"
 #include "Robot.h"
 

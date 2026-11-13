@@ -1,6 +1,7 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+
 class Robot;
 class Map;
 
@@ -15,4 +16,5 @@ class Move {
  public:
   static bool TryToMove(Robot& robot, Direction direction, Map& map);
 };
+
 #endif

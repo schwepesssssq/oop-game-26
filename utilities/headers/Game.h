@@ -10,7 +10,11 @@
 class Robot;
 class RobotFactory;
 
-enum class GameState { kInProgress, kPlayerWon, kPlayerLost };
+enum class GameState {
+  kInProgress,
+  kPlayerWon,
+  kPlayerLost
+};
 
 class Game {
  public:

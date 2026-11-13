@@ -17,13 +17,12 @@ void Visual::Render(const Game& game) {
 
   if (player) {
     std::cout << std::format(
-        "[Move: {}] Player [Rank: {} | Health: {}/{} | Energy: {}/{} | Exp: "
-        "{}/{} | Speed: {} |Enemies: {}]\n\n",
-        game.GetMoveCount(), player->GetRank(), player->GetCurrentHealth(),
-        player->GetMaxHealth(), player->GetCurrentEnergy(),
-        player->GetMaxEnergy(), player->GetCurrentExperience(),
-        player->GetExperienceLeftToNextLevel(), player->GetSpeed(),
-        robots.size() - 1);
+    "[Move: {}] Player [Rank: {} | Health: {}/{} | Energy: {}/{} | Exp: {}/{} | Speed: {} |Enemies: {}]\n\n",
+      game.GetMoveCount(),
+      player->GetRank(), player->GetHealth(), player->GetMaxHealth(),
+      player->GetEnergy(), player->GetMaxEnergy(),
+      player->GetCurrentExperience(), player->GetExperienceToRankUp(),
+      player->GetSpeed(), robots.size() - 1);
   }
 
   for (int y = 0; y < map.GetHeight(); ++y) {
@@ -33,7 +32,7 @@ void Visual::Render(const Game& game) {
       if (cell->IsVisible()) {
         bool robot_flag = false;
         for (auto robot : robots) {
-          if (x == robot->GetPosX() && y == robot->GetPosY()) {
+          if (x == robot->GetPositionX() && y == robot->GetPositionY()) {
             if (robot == player) {
               std::cout << "\033[34mP\033[0m ";
             } else {
@@ -47,35 +46,21 @@ void Visual::Render(const Game& game) {
           continue;
         }
 
+
         switch (cell->GetCellType()) {
-          case CellType::kWall:
-            std::cout << "\033[33m#\033[0m ";
-            break;
-          case CellType::kFactory:
-            std::cout << "\033[35mF\033[0m ";
-            break;
-          case CellType::kFree:
-            switch (cell->GetMoveCost()) {
-              case 1:
-                std::cout << "  ";
-                break;
-              default:
-                std::cout << "\033[90m,\033[0m ";
-                break;
-            }
+          case CellType::kWall: std::cout << "\033[33m#\033[0m "; break;
+          case CellType::kFactory: std::cout << "\033[35mF\033[0m "; break;
+          case CellType::kFree: switch (cell->GetMoveCost()) {
+            case 1: std::cout << "  "; break;
+            default: std::cout << "\033[90m,\033[0m "; break;
+          }
         }
       } else {
         if (cell->IsDiscovered()) {
           switch (cell->GetCellType()) {
-            case CellType::kWall:
-              std::cout << "\033[90m#\033[0m ";
-              break;
-            case CellType::kFactory:
-              std::cout << "\033[90mF\033[0m ";
-              break;
-            default:
-              std::cout << "\033[90m?\033[0m ";
-              break;
+            case CellType::kWall: std::cout << "\033[90m#\033[0m "; break;
+            case CellType::kFactory: std::cout << "\033[90mF\033[0m "; break;
+            default: std::cout << "\033[90m?\033[0m "; break;
           }
         } else {
           std::cout << "\033[90m?\033[0m ";

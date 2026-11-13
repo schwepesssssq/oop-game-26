@@ -43,26 +43,33 @@ bool Map::IsCellWalkable(int x, int y) const {
   const Cell& cell = grid_[y][x];
 
   for (auto robot : robots_) {
-    if (x == robot->GetPosX() && y == robot->GetPosY()) {
+    if(x == robot->GetPositionX() && y == robot->GetPositionY()) {
       return false;
     }
   }
-
-  return cell.GetCellType() != CellType::kWall &&
-         cell.GetCellType() != CellType::kFactory;
+  
+  return cell.GetCellType() != CellType::kWall && cell.GetCellType() != CellType::kFactory;
 }
 
-const std::vector<Robot*>& Map::GetRobots() const { return robots_; }
-
-void Map::AddRobot(Robot* robot) { robots_.push_back(robot); }
-
-void Map::DeleteRobot(Robot* robot) { std::erase(robots_, robot); }
-
-const std::vector<RobotFactory*>& Map::GetFactories() const {
-  return factories_;
+const std::vector<Robot*>& Map::GetRobots() const { 
+  return robots_; 
 }
 
-void Map::AddFactory(RobotFactory* factory) { factories_.push_back(factory); }
+void Map::AddRobot(Robot* robot) {
+  robots_.push_back(robot);
+}
+
+void Map::DeleteRobot(Robot* robot) {
+  std::erase(robots_, robot);
+}
+
+const std::vector<RobotFactory*>& Map::GetFactories() const { 
+  return factories_; 
+}
+
+void Map::AddFactory(RobotFactory* factory) {
+  factories_.push_back(factory);
+}
 
 void Map::DeleteFactory(RobotFactory* factory) {
   std::erase(factories_, factory);
@@ -71,7 +78,7 @@ void Map::DeleteFactory(RobotFactory* factory) {
 void Map::InitMap() {
   constexpr int kWallSpawnThreshold = 85;
   constexpr int kAlternativeFreeThreshold = 65;
-
+  
   constexpr int kSpawnZoneMaxSize = 2;
   constexpr int kFactoryZoneMin = 8;
   constexpr int kFactoryZoneMax = 10;
@@ -85,7 +92,7 @@ void Map::InitMap() {
     grid_[y].reserve(width_);
     for (int x = 0; x < width_; ++x) {
       bool is_spawn_zone = (x < kSpawnZoneMaxSize && y < kSpawnZoneMaxSize);
-      bool is_factory_zone = (x >= kFactoryZoneMin && y >= kFactoryZoneMin &&
+      bool is_factory_zone = (x >= kFactoryZoneMin && y >= kFactoryZoneMin && 
                               x < kFactoryZoneMax && y < kFactoryZoneMax);
 
       if (is_spawn_zone || is_factory_zone) {
@@ -97,7 +104,7 @@ void Map::InitMap() {
       if (random_number > kWallSpawnThreshold) {
         grid_[y].emplace_back(CellType::kWall, 1);
       } else if (random_number > kAlternativeFreeThreshold) {
-        grid_[y].emplace_back(CellType::kFree, 2);
+        grid_[y].emplace_back(CellType::kFree, 2); 
       } else {
         grid_[y].emplace_back(CellType::kFree, 1);
       }
@@ -117,7 +124,7 @@ void Map::UpdateVisibility(int center_x, int center_y, int vision_radius) {
       int new_x = center_x + dx;
       int new_y = center_y + dy;
       if (IsValidPosition(new_x, new_y)) {
-        grid_[new_y][new_x].SetVisible(true);
+        grid_[new_y][new_x].SetVisible(true); 
       }
     }
   }
