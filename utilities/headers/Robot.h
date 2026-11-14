@@ -8,8 +8,8 @@ enum class Team {
 
 class Robot {
  public:
-  Robot(int max_health, int max_energy, int attack, int speed, Team team,
-        int x, int y);
+  Robot(int max_health, int max_energy, int attack, int speed, Team team, int x,
+        int y);
   Robot();
 
   int GetHealth() const;
@@ -22,8 +22,8 @@ class Robot {
   int GetRank() const;
   int GetSpeed() const;
   Team GetTeam() const;
-  int GetPositionX() const;
-  int GetPositionY() const;
+  int GetPosX() const;
+  int GetPosY() const;
   int GetVisionRadius() const;
 
   bool TakeDamage(int damage_points);
@@ -44,7 +44,7 @@ class Robot {
 
  private:
   void CheckRankUp();
-  
+
   int max_health_;
   int health_;
   int max_energy_;

@@ -9,11 +9,11 @@
 #include "RobotFactory.h"
 
 Game::Game(int map_width, int map_height)
-        : map_(map_width, map_height),
-          player_(nullptr),
-          state_(GameState::kInProgress),
-          moves_count_(1) {}
-bool Game::AddPlayerRobot(int x, int y){
+    : map_(map_width, map_height),
+      player_(nullptr),
+      state_(GameState::kInProgress),
+      moves_count_(1) {}
+bool Game::AddPlayerRobot(int x, int y) {
   if (!map_.IsCellWalkable(x, y)) return false;
 
   player_ = new Robot(100, 100, 15, 2, Team::kPlayer, x, y);
@@ -54,7 +54,8 @@ bool Game::AddFactory(int x, int y, int spawn_interval) {
 }
 
 bool Game::PlayerMove(Direction direction) {
-  if (state_ != GameState::kInProgress || !player_ || player_->GetHealth() <= 0) return false;
+  if (state_ != GameState::kInProgress || !player_ || player_->GetHealth() <= 0)
+    return false;
 
   bool made_any_move = false;
 
@@ -64,7 +65,8 @@ bool Game::PlayerMove(Direction direction) {
     if (!step_success) break;
 
     made_any_move = true;
-    map_.UpdateVisibility(player_->GetPositionX(), player_->GetPositionY(), player_->GetVisionRadius());
+    map_.UpdateVisibility(player_->GetPosX(), player_->GetPosY(),
+                          player_->GetVisionRadius());
   }
 
   if (made_any_move) {
@@ -77,7 +79,6 @@ bool Game::PlayerMove(Direction direction) {
 }
 
 void Game::EndMove() {
-
   CleanupDeadRobots();
   CheckGameState();
 
@@ -91,18 +92,18 @@ void Game::EndMove() {
 
   CleanupDeadRobots();
 
-  if (player_ && player_->GetHealth() > 0){
+  if (player_ && player_->GetHealth() > 0) {
     player_->RestoreEnergy(kEnergyRegenPerTurn);
     player_->ResetMovePoints();
-  } 
+  }
 
-  for (auto& enemy : map_.GetRobots()){
+  for (auto& enemy : map_.GetRobots()) {
     if (enemy == player_) {
       continue;
     }
     enemy->RestoreEnergy(kEnergyRegenPerTurn);
     enemy->ResetMovePoints();
-  } 
+  }
 
   CheckGameState();
   ++moves_count_;
@@ -111,16 +112,16 @@ void Game::EndMove() {
 void Game::EnemyMove() {
   if (!player_) return;
 
-  int player_x = player_->GetPositionX();
-  int player_y = player_->GetPositionY();
+  int player_x = player_->GetPosX();
+  int player_y = player_->GetPosY();
 
   for (auto& enemy : map_.GetRobots()) {
-    if(enemy == player_) {
+    if (enemy == player_) {
       continue;
     }
     while (enemy->GetMovePoints() > 0) {
-      int enemy_x = enemy->GetPositionX();
-      int enemy_y = enemy->GetPositionY();
+      int enemy_x = enemy->GetPosX();
+      int enemy_y = enemy->GetPosY();
 
       Direction best_dir = Direction::kUp;
 
@@ -141,14 +142,14 @@ void Game::EnemyMove() {
 }
 
 void Game::CleanupDeadRobots() {
-  for (auto robot: map_.GetRobots()) {
+  for (auto robot : map_.GetRobots()) {
     if (robot->GetHealth() <= 0) {
       map_.DeleteRobot(robot);
     }
   }
 }
 
-void Game::CheckGameState(){
+void Game::CheckGameState() {
   if (!player_ || player_->GetHealth() <= 0 || player_->GetEnergy() < 6) {
     state_ = GameState::kPlayerLost;
   } else if (map_.GetRobots().size() == 1) {

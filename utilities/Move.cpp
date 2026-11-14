@@ -13,8 +13,8 @@ bool Move::TryToMove(Robot& robot, Direction direction, Map& map) {
     return false;
   }
 
-  int robot_x = robot.GetPositionX();
-  int robot_y = robot.GetPositionY();
+  int robot_x = robot.GetPosX();
+  int robot_y = robot.GetPosY();
 
   switch (direction) {
     case Direction::kUp:
@@ -44,8 +44,8 @@ bool Move::TryToMove(Robot& robot, Direction direction, Map& map) {
       continue;
     }
 
-    if (robot_x == another_robot->GetPositionX() &&
-        robot_y == another_robot->GetPositionY()) {
+    if (robot_x == another_robot->GetPosX() &&
+        robot_y == another_robot->GetPosY()) {
       if (robot.GetMovePoints() < 1) return false;
 
       robot.ConsumeEnergy(kMoveEnergyCost);

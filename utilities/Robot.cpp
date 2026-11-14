@@ -31,8 +31,8 @@ int Robot::GetExperienceToRankUp() const { return experience_to_rank_up_; }
 int Robot::GetRank() const { return rank_; }
 int Robot::GetSpeed() const { return speed_; }
 Team Robot::GetTeam() const { return team_; }
-int Robot::GetPositionX() const { return position_x_; }
-int Robot::GetPositionY() const { return position_y_; }
+int Robot::GetPosX() const { return position_x_; }
+int Robot::GetPosY() const { return position_y_; }
 int Robot::GetVisionRadius() const { return vision_radius_; }
 
 void Robot::SetPosition(int x, int y) {
