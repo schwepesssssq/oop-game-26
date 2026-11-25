@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <iostream>
 // #include <cmath>
 
 #include "Cell.h"
@@ -29,8 +30,10 @@ bool Game::AddEnemyRobot(int x, int y) {
   if (!map_.IsCellWalkable(x, y)) return false;
 
   Robot* enemy = new Robot(100, 100, 15, 2, Team::kEnemy, x, y);
+
   int random_spell = 2 + (std::rand() % 2);
-  enemy->GetInventory().GetInventory().push_back(random_spell);
+  enemy->AddAbility(random_spell);
+
   map_.AddRobot(enemy);
   return true;
 }
@@ -163,7 +166,41 @@ void Game::CheckGameState() {
 
 bool Game::AddAbilityToPlayer() {
   if (!player_ || player_->GetHealth() <= 0) return false;
-  return player_->AddAbility();
+
+  int spell_id;
+  std::cout << "\n=== Выбор способности ===\n";
+  std::cout << "0 - AoE Attack (Удар вокруг)\n";
+  std::cout << "1 - Range Attack (Дальний удар)\n";
+  std::cout << "2 - Healing (Лечение)\n";
+  std::cout << "3 - Teleportation (Телепортация)\n";
+  std::cout << "Выберите способность (0-3): ";
+  std::cin >> spell_id;
+
+  return player_->AddAbility(spell_id);
+}
+
+bool Game::PlayerUseAbility(int slot_index) {
+  if (state_ != GameState::kInProgress || !player_ ||
+      player_->GetHealth() <= 0) {
+    return false;
+  }
+
+  bool success = player_->UseAbility(slot_index, map_);
+
+  if (success) {
+    map_.UpdateVisibility(player_->GetPosX(), player_->GetPosY(),
+                          player_->GetVisionRadius());
+  }
+
+  return success;
+}
+
+bool Game::CheckPlayerUpgrades() {
+  if (player_ && player_->HasPendingUpgrade()) {
+    player_->ProcessUpgrade();
+    return true;
+  }
+  return false;
 }
 
 const Map& Game::GetMap() const { return map_; }

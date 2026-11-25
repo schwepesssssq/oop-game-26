@@ -29,6 +29,8 @@ class Game {
   GameState GetState() const;
   int GetMoveCount() const;
   bool AddAbilityToPlayer();
+  bool PlayerUseAbility(int slot_index);
+  bool CheckPlayerUpgrades();
 
  private:
   static constexpr int kEnergyRegenPerTurn = 5;

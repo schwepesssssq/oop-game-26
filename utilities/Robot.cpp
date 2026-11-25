@@ -4,6 +4,11 @@
 #include <iostream>
 #include <vector>
 
+#include "../abilities/AoEAttack.h"
+#include "../abilities/Healing.h"
+#include "../abilities/RangeAttack.h"
+#include "../abilities/Teleportation.h"
+
 Robot::Robot(int max_health, int max_energy, int attack, int speed, Team team,
              int x, int y)
     : max_health_(std::max(1, max_health)),
@@ -110,6 +115,7 @@ void Robot::CheckRankUp() {
     attack_ += 1;
 
     experience_to_rank_up_ += 10;
+    pending_upgrades_++;
   }
 }
 
@@ -123,23 +129,101 @@ bool Robot::UseMovePoints(int points) {
   return true;
 }
 
-bool Robot::AddAbility() {
-  int spell;
-  std::cout << "Выберите способность из списка" << std::endl;
-  std::cout << "AoE attack (0), Range attack(1), Healing(2), Teleportation(3)"
-            << std::endl;
-  std::cin >> spell;
-
-  if (spell < 0 || spell > 3) return false;
-
-  for (int value : inventory_.GetInventory()) {
-    if (value == spell) return false;
+bool Robot::AddAbility(int spell_id) {
+  for (int i = 0; i < inventory_.GetInventorySize(); ++i) {
+    if (inventory_.GetAbility(i)->GetId() == spell_id) {
+      std::cout << "Уже есть!\n";
+      return false;
+    }
   }
 
-  if (inventory_.GetInventorySize() >= inventory_.GetInventoryLimit()) {
+  std::unique_ptr<Ability> ability = nullptr;
+  switch (spell_id) {
+    case 0:
+      ability = std::make_unique<AoEAttack>();
+      break;
+    case 1:
+      ability = std::make_unique<RangeAttack>();
+      break;
+    case 2:
+      ability = std::make_unique<Healing>();
+      break;
+    case 3:
+      ability = std::make_unique<Teleportation>();
+      break;
+    default:
+      return false;
+  }
+
+  return inventory_.AddAbility(std::move(ability));
+}
+
+bool Robot::UseAbility(int slot_index, Map& map) {
+  Ability* ability = inventory_.GetAbility(slot_index);
+
+  if (ability == nullptr) {
+    std::cout << "No ability here!" << std::endl;
     return false;
   }
 
-  inventory_.GetInventory().push_back(spell);
-  return true;
+  return ability->UseAbility(*this, map);
+}
+
+void Robot::UpgradeAbility(int slot_index) {
+  Ability* ability = inventory_.GetAbility(slot_index);
+  if (ability) {
+    ability->UpgradeAbility();
+    std::cout << "Способность улучшена!\n";
+  }
+}
+
+void Robot::ProcessUpgrade() {
+  if (pending_upgrades_ <= 0) return;
+
+  std::cout << "\n=== ПОВЫШЕНИЕ РАНГА ===\n";
+  std::cout << "1. Изучить новую способность\n";
+  std::cout << "2. Улучшить существующую способность\n";
+  std::cout << "Выбор: ";
+
+  int choice;
+  std::cin >> choice;
+
+  if (choice == 1) {
+    if (inventory_.GetInventorySize() >= inventory_.GetInventoryLimit()) {
+      std::cout << "All abilities are already learned.\n";
+    } else {
+      int spell_id;
+      std::cout << "0 - AoE, 1 - Range, 2 - Heal, 3 - Teleport: ";
+      std::cin >> spell_id;
+
+      if (AddAbility(spell_id)) {
+        pending_upgrades_--;
+        return;
+      } else {
+        std::cout << "Couldn't execute.\n";
+        return;
+      }
+    }
+  }
+
+  if (inventory_.GetInventorySize() == 0) {
+    std::cout << "Nothing to upgrade\n";
+    return;
+  }
+
+  std::cout << "Choose what to upgrade:\n";
+  for (int i = 0; i < inventory_.GetInventorySize(); ++i) {
+    std::cout << i + 1 << ". " << inventory_.GetAbility(i)->GetName() << "\n";
+  }
+
+  int slot;
+  std::cin >> slot;
+  slot--;
+
+  if (slot >= 0 && slot < inventory_.GetInventorySize()) {
+    inventory_.GetAbility(slot)->UpgradeAbility();
+    pending_upgrades_--;
+  } else {
+    std::cout << "Wrong choice!\n";
+  }
 }

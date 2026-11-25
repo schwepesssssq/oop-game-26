@@ -11,6 +11,7 @@ Controller::Controller(Game& game) : game_(game) {}
 
 void Controller::Run() {
   while (game_.GetState() == GameState::kInProgress) {
+    game_.CheckPlayerUpgrades();
     Visual::Render(game_);
 
     if (!ProcessInput()) {
@@ -32,6 +33,18 @@ bool Controller::ProcessInput() {
   std::cin >> input;
 
   if (input.length() != 1) {
+    return true;
+  }
+
+  char cmd = std::tolower(input[0]);
+
+  if (cmd >= '1' && cmd <= '4') {
+    int slot_index = cmd - '1';
+
+    if (game_.PlayerUseAbility(slot_index)) {
+    } else {
+      std::cout << "Couldn't use ability." << std::endl;
+    }
     return true;
   }
 

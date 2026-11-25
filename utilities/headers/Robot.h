@@ -7,6 +7,8 @@ enum class Team {
   kEnemy,
 };
 
+class Map;
+
 class Robot {
  public:
   Robot(int max_health, int max_energy, int attack, int speed, Team team, int x,
@@ -35,7 +37,8 @@ class Robot {
   bool AddExperience(int experience_points);
   void SetPosition(int x, int y);
   void SetVisionRadius(int radius);
-  bool AddAbility();
+  bool AddAbility(int spell_id);
+  bool UseAbility(int slot_index, Map& map);
 
   bool IsEnemyWith(const Robot& other) const;
 
@@ -44,6 +47,10 @@ class Robot {
   int GetMovePoints() const;
   void ResetMovePoints();
   bool UseMovePoints(int amount);
+  const Inventory& GetInventory() const { return inventory_; }
+  void UpgradeAbility(int slot_index);
+  bool HasPendingUpgrade() const { return pending_upgrades_ > 0; }
+  void ProcessUpgrade();
 
  private:
   void CheckRankUp();
@@ -63,6 +70,7 @@ class Robot {
   int move_points_;
   int vision_radius_;
   Inventory inventory_;
+  int pending_upgrades_ = 0;
 };
 
 #endif

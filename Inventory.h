@@ -2,17 +2,23 @@
 #define INVENTORY_H
 #include <vector>
 
+#include "abilities/Ability.h"
+
 class Inventory {
-  std::vector<int> inventory_;
+ private:
+  std::vector<std::unique_ptr<Ability>> inventory_;
   int max_size_ = 4;
 
  public:
   Inventory() = default;
-  std::vector<int>& GetInventory();
 
-  // bool AddItem(int item);
-  int GetInventorySize();
-  int GetInventoryLimit();
+  bool AddAbility(std::unique_ptr<Ability> ability);
+
+  Ability* GetAbility(int index);
+  const Ability* GetAbility(int index) const;
+
+  int GetInventorySize() const;
+  int GetInventoryLimit() const;
 };
 
 #endif

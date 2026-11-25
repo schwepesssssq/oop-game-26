@@ -23,6 +23,19 @@ void Visual::Render(const Game& game) {
         player->GetMaxHealth(), player->GetEnergy(), player->GetMaxEnergy(),
         player->GetCurrentExperience(), player->GetExperienceToRankUp(),
         player->GetSpeed(), robots.size() - 1);
+
+    std::cout << "Inventory: ";
+    if (player->GetInventory().GetInventorySize() == 0) {
+      std::cout << "[Empty]";
+    } else {
+      for (int i = 0; i < player->GetInventory().GetInventorySize(); ++i) {
+        const Ability* ability = player->GetInventory().GetAbility(i);
+        if (ability) {
+          std::cout << i + 1 << ": " << ability->GetName() << "  ";
+        }
+      }
+    }
+    std::cout << "\n\n";
   }
 
   for (int y = 0; y < map.GetHeight(); ++y) {
