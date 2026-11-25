@@ -1,6 +1,7 @@
 #ifndef VISUAL_H
 #define VISUAL_H
 
+#include "../../abilities/Ability.h"
 class Game;
 
 class Visual {

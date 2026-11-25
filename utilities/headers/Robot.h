@@ -1,5 +1,6 @@
 #ifndef ROBOT_H
 #define ROBOT_H
+#include "../../Inventory.h"
 
 enum class Team {
   kPlayer,
@@ -25,6 +26,7 @@ class Robot {
   int GetPosX() const;
   int GetPosY() const;
   int GetVisionRadius() const;
+  Inventory& GetInventory() { return inventory_; }
 
   bool TakeDamage(int damage_points);
   bool Heal(int health_points);
@@ -33,6 +35,7 @@ class Robot {
   bool AddExperience(int experience_points);
   void SetPosition(int x, int y);
   void SetVisionRadius(int radius);
+  bool AddAbility();
 
   bool IsEnemyWith(const Robot& other) const;
 
@@ -59,6 +62,7 @@ class Robot {
   int position_y_;
   int move_points_;
   int vision_radius_;
+  Inventory inventory_;
 };
 
 #endif

@@ -1,7 +1,8 @@
 #include "Game.h"
 
 #include <algorithm>
-#include <cmath>
+#include <cstdlib>
+// #include <cmath>
 
 #include "Cell.h"
 #include "Move.h"
@@ -13,6 +14,7 @@ Game::Game(int map_width, int map_height)
       player_(nullptr),
       state_(GameState::kInProgress),
       moves_count_(1) {}
+
 bool Game::AddPlayerRobot(int x, int y) {
   if (!map_.IsCellWalkable(x, y)) return false;
 
@@ -27,6 +29,8 @@ bool Game::AddEnemyRobot(int x, int y) {
   if (!map_.IsCellWalkable(x, y)) return false;
 
   Robot* enemy = new Robot(100, 100, 15, 2, Team::kEnemy, x, y);
+  int random_spell = 2 + (std::rand() % 2);
+  enemy->GetInventory().GetInventory().push_back(random_spell);
   map_.AddRobot(enemy);
   return true;
 }
@@ -155,6 +159,11 @@ void Game::CheckGameState() {
   } else if (map_.GetRobots().size() == 1) {
     state_ = GameState::kPlayerWon;
   }
+}
+
+bool Game::AddAbilityToPlayer() {
+  if (!player_ || player_->GetHealth() <= 0) return false;
+  return player_->AddAbility();
 }
 
 const Map& Game::GetMap() const { return map_; }

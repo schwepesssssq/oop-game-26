@@ -5,6 +5,7 @@ int main() {
   Game game(20, 20);
 
   game.AddPlayerRobot(0, 0);
+  game.AddAbilityToPlayer();
   game.AddEnemyRobot(5, 5);
   game.AddEnemyRobot(8, 2);
   game.AddEnemyRobot(3, 7);

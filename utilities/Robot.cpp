@@ -1,6 +1,8 @@
 #include "Robot.h"
 
 #include <algorithm>
+#include <iostream>
+#include <vector>
 
 Robot::Robot(int max_health, int max_energy, int attack, int speed, Team team,
              int x, int y)
@@ -118,5 +120,26 @@ void Robot::ResetMovePoints() { move_points_ = speed_; }
 bool Robot::UseMovePoints(int points) {
   if (points <= 0 || move_points_ < points) return false;
   move_points_ -= points;
+  return true;
+}
+
+bool Robot::AddAbility() {
+  int spell;
+  std::cout << "Выберите способность из списка" << std::endl;
+  std::cout << "AoE attack (0), Range attack(1), Healing(2), Teleportation(3)"
+            << std::endl;
+  std::cin >> spell;
+
+  if (spell < 0 || spell > 3) return false;
+
+  for (int value : inventory_.GetInventory()) {
+    if (value == spell) return false;
+  }
+
+  if (inventory_.GetInventorySize() >= inventory_.GetInventoryLimit()) {
+    return false;
+  }
+
+  inventory_.GetInventory().push_back(spell);
   return true;
 }

@@ -20,10 +20,10 @@ class Cell {
 
   void SetCellType(CellType type);
   void SetMoveCost(int cost);
-  
+
  private:
   CellType type_;
-  int move_cost_;        
+  int move_cost_;
   bool is_discovered_;
   bool is_visible_;
 };

@@ -4,17 +4,14 @@
 #include <memory>
 #include <vector>
 
+#include "../../abilities/Ability.h"
 #include "Map.h"
 #include "Move.h"
 
 class Robot;
 class RobotFactory;
 
-enum class GameState {
-  kInProgress,
-  kPlayerWon,
-  kPlayerLost
-};
+enum class GameState { kInProgress, kPlayerWon, kPlayerLost };
 
 class Game {
  public:
@@ -31,6 +28,7 @@ class Game {
   const std::vector<Robot*>& GetEnemies() const;
   GameState GetState() const;
   int GetMoveCount() const;
+  bool AddAbilityToPlayer();
 
  private:
   static constexpr int kEnergyRegenPerTurn = 5;
